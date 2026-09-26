@@ -71,9 +71,7 @@ String makeMsgId() {
   return String(ESP.getEfuseMac(), HEX) + "-" + String(msgCounter);
 }
 
-// Single source of truth for duplicate detection.
-// Returns true if this id has already been seen (and does NOT re-insert it).
-// Returns false and inserts the id if this is the first time we've seen it.
+
 bool alreadySeen(const String& id) {
   if (seenMessageIds.count(id)) return true;
   seenMessageIds.insert(id);
@@ -97,9 +95,7 @@ void purgeStaleTimestamps() {
   }
 }
 
-// =====================================================
 // CALCULATE LINK STATISTICS
-// =====================================================
 
 float getPDR() {
   if (txCount == 0) return 0.0;
@@ -428,8 +424,8 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
     serializeJson(loraDoc, loraOut);
 
     txCount++;
-    txAttempts++;                       // FIX: was only counted in periodic broadcast
-    totalTxBytes += loraOut.length();   // FIX: was only counted in periodic broadcast
+    txAttempts++;                      
+    totalTxBytes += loraOut.length();   
     txTimestamps[msgId] = millis();
 
     int state = radio.transmit(loraOut);
